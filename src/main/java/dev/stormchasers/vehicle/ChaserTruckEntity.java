@@ -3,6 +3,7 @@ package dev.stormchasers.vehicle;
 
 import dev.stormchasers.StormChasers;
 
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
@@ -16,9 +17,21 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.server.level.ServerPlayer;
 
 public class ChaserTruckEntity extends VehicleEntity {
+
+    private static final double MAX_FORWARD_SPEED = 0.62;
+    private static final double MAX_BOOST_SPEED = 0.78;
+    private static final double MAX_REVERSE_SPEED = 0.25;
+
+    private static final double ACCELERATION = 0.012;
+    private static final double BRAKE_POWER = 0.035;
+    private static final double ROLLING_FRICTION = 0.985;
+
+    private static final double GROUND_GRIP = 0.78;
+    private static final double AIR_GRIP = 0.97;
+
+    private float steeringSmooth = 0.0F;
 
     public ChaserTruckEntity(
         EntityType<? extends ChaserTruckEntity> type,
@@ -41,85 +54,153 @@ public class ChaserTruckEntity extends VehicleEntity {
         double vy = velocity.y;
         double vz = velocity.z;
 
-        if (this.getFirstPassenger() instanceof ServerPlayer driver) {
+        boolean grounded = this.onGround();
 
+        float throttle = 0.0F;
+        float steering = 0.0F;
+        boolean boosting = false;
+
+        // Read driver controls
+        if (this.getFirstPassenger() instanceof ServerPlayer driver) {
             Input input = driver.getLastClientInput();
 
-            float throttle =
+            throttle =
                 (input.forward() ? 1.0F : 0.0F)
                 - (input.backward() ? 1.0F : 0.0F);
 
-            float steering =
+            steering =
                 (input.left() ? 1.0F : 0.0F)
                 - (input.right() ? 1.0F : 0.0F);
 
-            double speed = Math.sqrt(vx * vx + vz * vz);
+            boosting = input.sprint();
+        }
 
-            // Steering
-            if (Math.abs(steering) > 0.01F && speed > 0.02) {
-                float reverse = throttle < 0 ? -1.0F : 1.0F;
+        double horizontalSpeed = Math.sqrt(vx * vx + vz * vz);
 
-                float turnSpeed =
-                    1.5F + (float) Math.min(speed * 3.0, 1.2);
+        // Smooth steering input
+        steeringSmooth += (steering - steeringSmooth) * 0.22F;
 
-                this.setYRot(
-                    this.getYRot() + steering * turnSpeed * reverse
-                );
+        // Calculate speed relative to the truck direction
+        double yaw = Math.toRadians(this.getYRot());
+
+        double forwardX = -Math.sin(yaw);
+        double forwardZ = Math.cos(yaw);
+
+        double sideX = Math.cos(yaw);
+        double sideZ = Math.sin(yaw);
+
+        double forwardSpeed = vx * forwardX + vz * forwardZ;
+        double sideSpeed = vx * sideX + vz * sideZ;
+
+        // Steering: slower at low speed, faster while moving
+        if (Math.abs(steeringSmooth) > 0.01F) {
+            double speedFactor = Math.min(horizontalSpeed / 0.30, 1.0);
+
+            double turnRate = 0.25 + speedFactor * 1.15;
+
+            if (forwardSpeed < -0.02) {
+                turnRate *= -1.0;
             }
 
-            // Acceleration
-            double acceleration =
-                input.sprint() ? 0.035 : 0.025;
+            if (!grounded) {
+                turnRate *= 0.35;
+            }
 
-            double angle = Math.toRadians(this.getYRot());
+            this.setYRot(
+                this.getYRot() + steeringSmooth * (float) turnRate
+            );
+        }
 
-            vx += -Math.sin(angle) * throttle * acceleration;
-            vz += Math.cos(angle) * throttle * acceleration;
+        // Recalculate direction after steering
+        yaw = Math.toRadians(this.getYRot());
 
-            // Maximum speed
-            double maxSpeed;
+        forwardX = -Math.sin(yaw);
+        forwardZ = Math.cos(yaw);
 
-            if (throttle < 0) {
-                maxSpeed = 0.30;
+        sideX = Math.cos(yaw);
+        sideZ = Math.sin(yaw);
+
+        // Recalculate forward and sideways velocity
+        forwardSpeed = vx * forwardX + vz * forwardZ;
+        sideSpeed = vx * sideX + vz * sideZ;
+
+        // Acceleration and braking
+        if (throttle > 0.0F) {
+            if (forwardSpeed < -0.02) {
+                // Brake before changing from reverse to forward
+                forwardSpeed += BRAKE_POWER;
             } else {
-                maxSpeed = input.sprint() ? 0.72 : 0.52;
+                double acceleration = boosting
+                    ? ACCELERATION * 1.35
+                    : ACCELERATION;
+
+                forwardSpeed += acceleration;
             }
+        } else if (throttle < 0.0F) {
+            if (forwardSpeed > 0.02) {
+                // Brake before reversing
+                forwardSpeed -= BRAKE_POWER;
+            } else {
+                forwardSpeed -= ACCELERATION * 0.65;
+            }
+        } else {
+            // Gradually slow down when no key is pressed
+            forwardSpeed *= ROLLING_FRICTION;
 
-            double horizontalSpeed = Math.sqrt(vx * vx + vz * vz);
-
-            if (horizontalSpeed > maxSpeed) {
-                double scale = maxSpeed / horizontalSpeed;
-                vx *= scale;
-                vz *= scale;
+            if (Math.abs(forwardSpeed) < 0.003) {
+                forwardSpeed = 0.0;
             }
         }
 
-        // Friction
-        double friction = this.onGround() ? 0.88 : 0.99;
+        // Speed limits
+        double maxSpeed;
 
-        vx *= friction;
-        vz *= friction;
+        if (forwardSpeed < 0.0) {
+            maxSpeed = MAX_REVERSE_SPEED;
+        } else {
+            maxSpeed = boosting
+                ? MAX_BOOST_SPEED
+                : MAX_FORWARD_SPEED;
+        }
+
+        forwardSpeed = Math.max(
+            -MAX_REVERSE_SPEED,
+            Math.min(forwardSpeed, maxSpeed)
+        );
+
+        // Tire grip: remove sideways sliding
+        double grip = grounded ? GROUND_GRIP : AIR_GRIP;
+
+        sideSpeed *= grip;
+
+        if (Math.abs(sideSpeed) < 0.002) {
+            sideSpeed = 0.0;
+        }
+
+        // Rebuild horizontal velocity
+        vx = forwardX * forwardSpeed + sideX * sideSpeed;
+        vz = forwardZ * forwardSpeed + sideZ * sideSpeed;
 
         // Gravity
-        if (!this.onGround()) {
+        if (!grounded) {
             vy = Math.max(-0.6, vy - 0.08);
-        } else if (vy < 0) {
-            vy = 0;
+        } else if (vy < 0.0) {
+            vy = 0.0;
         }
 
-        // Collision with terrain
+        // Move and handle collisions
         this.move(
             MoverType.SELF,
             new Vec3(vx, vy, vz)
         );
 
         if (this.horizontalCollision) {
-            vx = 0;
-            vz = 0;
+            vx = 0.0;
+            vz = 0.0;
         }
 
         if (this.verticalCollision) {
-            vy = 0;
+            vy = 0.0;
         }
 
         this.setDeltaMovement(vx, vy, vz);
@@ -159,9 +240,9 @@ public class ChaserTruckEntity extends VehicleEntity {
         double angle = Math.toRadians(this.getYRot());
 
         return new Vec3(
-            this.getX() + Math.cos(angle) * 1.5,
+            this.getX() + Math.cos(angle) * 1.8,
             this.getY() + 0.2,
-            this.getZ() + Math.sin(angle) * 1.5
+            this.getZ() + Math.sin(angle) * 1.8
         );
     }
 
