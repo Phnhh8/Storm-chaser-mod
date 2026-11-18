@@ -1,8 +1,9 @@
 
 package dev.stormchasers.tornado;
 
+import java.util.UUID;
+
 import net.minecraft.network.chat.Component;
-import net.minecraft.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -31,7 +32,7 @@ public class TornadoRemoteItem extends Item {
 
             player.sendSystemMessage(
                 Component.literal("§cTORNADO WARNING! Tornado spawned!"),
-                Util.NIL_UUID
+                new UUID(0L, 0L)
             );
         }
 
