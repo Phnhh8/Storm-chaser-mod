@@ -15,7 +15,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.world.item.Item;
 
 public class StormChasers implements ModInitializer {
 
@@ -69,4 +70,3 @@ public class StormChasers implements ModInitializer {
         });
     }
 }
-
