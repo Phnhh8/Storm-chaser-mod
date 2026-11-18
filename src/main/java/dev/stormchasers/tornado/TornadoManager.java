@@ -7,6 +7,7 @@ import java.util.List;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -16,7 +17,7 @@ import net.minecraft.world.phys.Vec3;
 public final class TornadoManager {
 
     private static final List<Vortex> ACTIVE = new ArrayList<>();
-    private static boolean initialized;
+    private static boolean initialized = false;
 
     private TornadoManager() {}
 
@@ -36,7 +37,7 @@ public final class TornadoManager {
         double strength
     ) {
         ACTIVE.add(new Vortex(
-            level.dimension().location().toString(),
+            level.dimension(),
             position,
             duration,
             strength
@@ -51,8 +52,7 @@ public final class TornadoManager {
             ServerLevel world = null;
 
             for (ServerLevel candidate : worlds) {
-                if (candidate.dimension().location()
-                    .toString().equals(v.dimension)) {
+                if (candidate.dimension().equals(v.dimension)) {
                     world = candidate;
                     break;
                 }
@@ -78,14 +78,6 @@ public final class TornadoManager {
                     x, v.center.y + y, z,
                     3, 0.3, 0.3, 0.3, 0.02
                 );
-
-                if (i % 3 == 0) {
-                    world.sendParticles(
-                        ParticleTypes.CAMPFIRE_COSY_SMOKE,
-                        x, v.center.y + y, z,
-                        1, 0.2, 0.2, 0.2, 0.01
-                    );
-                }
             }
 
             AABB area = new AABB(
@@ -94,9 +86,7 @@ public final class TornadoManager {
             );
 
             for (Entity entity : world.getEntities(
-                (Entity) null,
-                area,
-                e -> e.isAlive()
+                (Entity) null, area, e -> e.isAlive()
             )) {
                 Vec3 delta = v.center.subtract(entity.position());
                 double distance = Math.max(
@@ -117,13 +107,13 @@ public final class TornadoManager {
     }
 
     private static class Vortex {
-        final String dimension;
+        final ResourceKey<Level> dimension;
         final Vec3 center;
         final double strength;
         int time;
 
         Vortex(
-            String dimension,
+            ResourceKey<Level> dimension,
             Vec3 center,
             int time,
             double strength
