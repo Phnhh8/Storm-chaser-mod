@@ -22,11 +22,17 @@ public class StormChasers implements ModInitializer {
 
     public static final String MOD_ID = "stormchasers";
 
-    private static Item register(String name, Item item) {
+    private static Item register(String name, ItemFactory factory) {
         ResourceKey<Item> key = ResourceKey.create(
             Registries.ITEM,
             Identifier.fromNamespaceAndPath(MOD_ID, name)
         );
+
+        Item.Properties properties = new Item.Properties()
+            .setId(key)
+            .stacksTo(1);
+
+        Item item = factory.create(properties);
 
         return Registry.register(
             BuiltInRegistries.ITEM,
@@ -35,29 +41,33 @@ public class StormChasers implements ModInitializer {
         );
     }
 
+    @FunctionalInterface
+    private interface ItemFactory {
+        Item create(Item.Properties properties);
+    }
+
     public static final Item TORNADO_REMOTE = register(
         "tornado_remote",
-        new TornadoRemoteItem(new Item.Properties().stacksTo(1))
+        TornadoRemoteItem::new
     );
 
     public static final Item STORM_PROBE = register(
         "storm_probe",
-        new StormProbeItem(new Item.Properties().stacksTo(1))
+        StormProbeItem::new
     );
 
     public static final Item STORM_RADAR = register(
         "storm_radar",
-        new RadarItem(new Item.Properties().stacksTo(1))
+        RadarItem::new
     );
 
     public static final Item CHASER_TRUCK = register(
         "chaser_truck",
-        new ChaserTruckItem(new Item.Properties().stacksTo(1))
+        ChaserTruckItem::new
     );
 
     @Override
     public void onInitialize() {
-
         TornadoManager.initialize();
 
         CreativeModeTabEvents.modifyOutputEvent(
