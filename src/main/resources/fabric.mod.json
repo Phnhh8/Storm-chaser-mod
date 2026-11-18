@@ -1,0 +1,22 @@
+
+{
+  "schemaVersion": 1,
+  "id": "stormchasers",
+  "version": "${version}",
+  "name": "Storm Chasers",
+  "description": "Tornadoes, storm equipment and storm chasing vehicles.",
+  "authors": ["StormChasers"],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.stormchasers.StormChasers"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
