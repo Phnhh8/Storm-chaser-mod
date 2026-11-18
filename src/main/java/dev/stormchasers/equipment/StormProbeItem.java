@@ -33,11 +33,12 @@ public class StormProbeItem extends Item {
                 wind >= 90 ? "EF2 MODERATE" :
                 wind >= 60 ? "EF1 LOW" : "NORMAL";
 
-            player.sendSystemMessage(
-                Component.literal(
-                    "§bSTORM PROBE | Wind: " +
-                    wind + " km/h | Risk: " + risk
-                ),
+player.sendSystemMessage(
+    Component.literal(
+        "§bSTORM PROBE | Wind: " +
+        wind + " km/h | Risk: " + risk
+    )
+);
                 new UUID(0L, 0L)
             );
         }
