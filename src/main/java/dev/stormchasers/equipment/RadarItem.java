@@ -1,6 +1,7 @@
 
 package dev.stormchasers.equipment;
 
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,14 +16,17 @@ public class RadarItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
-
+    public InteractionResult use(
+        Level level,
+        Player player,
+        InteractionHand hand
+    ) {
         if (!level.isClientSide()) {
-            player.displayClientMessage(
+            player.sendSystemMessage(
                 Component.literal(
-                    "§2STORM RADAR: §fScan complete! §cPrototype scan"
+                    "§2STORM RADAR: §fScan completed!"
                 ),
-                true
+                Util.NIL_UUID
             );
         }
 
