@@ -31,7 +31,6 @@ public final class TornadoManager {
         );
     }
 
-    // Hàm tạo lốc dành cho TornadoRemoteItem
     public static void spawnTornado(Level level, BlockPos position) {
         if (level.isClientSide()) return;
 
@@ -78,6 +77,7 @@ public final class TornadoManager {
 
             double t = world.getGameTime() * 0.2;
 
+            // Tornado particle effects
             for (int i = 0; i < 40; i++) {
                 double y = (i % 20) * 1.2;
                 double radius = 2 + y * 0.13;
@@ -93,16 +93,23 @@ public final class TornadoManager {
                 );
             }
 
+            // Tornado suction area
             AABB area = new AABB(
                 v.center.x - 12, v.center.y - 3, v.center.z - 12,
                 v.center.x + 12, v.center.y + 25, v.center.z + 12
             );
 
             for (Entity entity : world.getEntities(
-                (Entity) null, area, e -> e.isAlive()
+                (Entity) null,
+                area,
+                e -> e.isAlive()
             )) {
                 Vec3 delta = v.center.subtract(entity.position());
-                double distance = Math.max(1.0, delta.horizontalDistance());
+
+                double distance = Math.max(
+                    1.0,
+                    delta.horizontalDistance()
+                );
 
                 Vec3 force = new Vec3(
                     delta.x / distance * v.strength / 100,
@@ -113,7 +120,6 @@ public final class TornadoManager {
                 entity.setDeltaMovement(
                     entity.getDeltaMovement().add(force)
                 );
-                entity.hurtMarked = true;
             }
         }
     }
