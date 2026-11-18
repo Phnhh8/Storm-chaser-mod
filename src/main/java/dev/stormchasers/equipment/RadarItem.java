@@ -1,7 +1,6 @@
 
 package dev.stormchasers.equipment;
 
-import java.util.UUID;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
