@@ -12,19 +12,39 @@ import net.minecraft.resources.Identifier;
 
 public final class ChaserTruckModel {
 
-    private static final Identifier BLACK = id("block/black_concrete");
-    private static final Identifier GRAY = id("block/light_gray_concrete");
-    private static final Identifier YELLOW = id("block/yellow_concrete");
-    private static final Identifier IRON = id("block/iron_block");
-    private static final Identifier GLASS = id("block/light_blue_stained_glass");
-    private static final Identifier LIGHT = id("block/sea_lantern");
-    private static final Identifier ORANGE = id("block/orange_concrete");
-    private static final Identifier DARK = id("block/deepslate_tiles");
+    private static final Identifier BLACK =
+        id("block/black_concrete");
+
+    private static final Identifier GRAY =
+        id("block/gray_concrete");
+
+    private static final Identifier YELLOW =
+        id("block/yellow_concrete");
+
+    private static final Identifier IRON =
+        id("block/iron_block");
+
+    private static final Identifier GLASS =
+        id("block/light_blue_stained_glass");
+
+    private static final Identifier LIGHT =
+        id("block/sea_lantern");
+
+    private static final Identifier ORANGE =
+        id("block/orange_concrete");
+
+    private static final Identifier DARK =
+        id("block/polished_deepslate");
 
     private ChaserTruckModel() {}
 
+    // RenderTypes.entitySolid expects the actual PNG resource path,
+    // not the block-atlas key. This prevents the missing-texture magenta.
     private static Identifier id(String path) {
-        return Identifier.fromNamespaceAndPath("minecraft", path);
+        return Identifier.fromNamespaceAndPath(
+            "minecraft",
+            "textures/" + path + ".png"
+        );
     }
 
     public static void render(
@@ -35,374 +55,271 @@ public final class ChaserTruckModel {
         float radarSpin
     ) {
 
-        // =====================================
-        // LOWER CHASSIS
-        // =====================================
-
+        // Main armored chassis
         box(collector, pose, BLACK, light,
-            -0.88F, 0.42F, -1.70F,
-             0.88F, 0.83F,  1.65F
-        );
-
-        // Reinforced underbody
-        box(collector, pose, IRON, light,
-            -0.76F, 0.34F, -1.48F,
-             0.76F, 0.43F,  1.48F
-        );
-
-        // Front bumper supports
-        box(collector, pose, DARK, light,
-            -0.96F, 0.43F, 1.48F,
-            -0.76F, 0.66F, 1.78F
+            -0.92F, 0.38F, -1.62F,
+             0.92F, 0.82F,  1.60F
         );
 
         box(collector, pose, DARK, light,
-             0.76F, 0.43F, 1.48F,
-             0.96F, 0.66F, 1.78F
+            -0.82F, 0.43F, -1.50F,
+             0.82F, 0.72F,  1.48F
         );
 
-        // =====================================
-        // FRONT HOOD
-        // =====================================
-
-        box(collector, pose, BLACK, light,
-            -0.85F, 0.77F, 0.48F,
-             0.85F, 1.15F, 1.58F
-        );
-
+        // Front hood
         box(collector, pose, GRAY, light,
-            -0.76F, 1.13F, 0.65F,
-             0.76F, 1.18F, 1.42F
+            -0.86F, 0.74F, 0.36F,
+             0.86F, 1.18F, 1.58F
         );
 
-        // Yellow hood stripes
-        box(collector, pose, YELLOW, light,
-            -0.67F, 1.19F, 0.77F,
-            -0.48F, 1.21F, 1.38F
-        );
-
-        box(collector, pose, YELLOW, light,
-             0.48F, 1.19F, 0.77F,
-             0.67F, 1.21F, 1.38F
-        );
-
-        // Hood center reinforcement
-        box(collector, pose, DARK, light,
-            -0.13F, 1.19F, 0.83F,
-             0.13F, 1.23F, 1.40F
-        );
-
-        // =====================================
-        // CABIN
-        // =====================================
-
-        // Main cabin frame
         box(collector, pose, BLACK, light,
-            -0.79F, 0.85F, -0.76F,
-             0.79F, 1.83F,  0.55F
+            -0.70F, 1.18F, 0.55F,
+             0.70F, 1.24F, 1.43F
         );
 
-        // Roof
+        // Hood warning stripes
+        box(collector, pose, YELLOW, light,
+            -0.76F, 1.245F, 0.72F,
+            -0.63F, 1.255F, 1.35F
+        );
+
+        box(collector, pose, YELLOW, light,
+             0.63F, 1.245F, 0.72F,
+             0.76F, 1.255F, 1.35F
+        );
+
+        // Cabin
         box(collector, pose, BLACK, light,
-            -0.84F, 1.78F, -0.82F,
-             0.84F, 1.91F,  0.62F
+            -0.82F, 0.73F, -0.78F,
+             0.82F, 1.76F,  0.48F
         );
 
         // Front windshield
         box(collector, pose, GLASS, light,
-            -0.65F, 1.24F, 0.56F,
-             0.65F, 1.69F, 0.61F
+            -0.66F, 1.20F, 0.49F,
+             0.66F, 1.66F, 0.55F
         );
 
-        // Rear windshield
+        // Rear window
         box(collector, pose, GLASS, light,
-            -0.61F, 1.25F, -0.83F,
-             0.61F, 1.65F, -0.78F
+            -0.59F, 1.20F, -0.82F,
+             0.59F, 1.59F, -0.77F
         );
 
-        // Left side window
+        // Side windows
         box(collector, pose, GLASS, light,
-            -0.81F, 1.25F, -0.57F,
-            -0.77F, 1.67F,  0.37F
+            -0.86F, 1.20F, -0.58F,
+            -0.82F, 1.61F,  0.32F
         );
 
-        // Right side window
         box(collector, pose, GLASS, light,
-             0.77F, 1.25F, -0.57F,
-             0.81F, 1.67F,  0.37F
+             0.82F, 1.20F, -0.58F,
+             0.86F, 1.61F,  0.32F
         );
 
-        // Window pillars
-        box(collector, pose, YELLOW, light,
-            -0.82F, 1.17F, 0.38F,
-            -0.75F, 1.78F, 0.49F
-        );
-
-        box(collector, pose, YELLOW, light,
-             0.75F, 1.17F, 0.38F,
-             0.82F, 1.78F, 0.49F
-        );
-
-        // Door panels
-        box(collector, pose, DARK, light,
-            -0.84F, 0.85F, -0.65F,
-            -0.80F, 1.17F,  0.39F
-        );
-
-        box(collector, pose, DARK, light,
-             0.80F, 0.85F, -0.65F,
-             0.84F, 1.17F,  0.39F
-        );
-
-        // Door yellow markings
-        box(collector, pose, YELLOW, light,
-            -0.86F, 0.91F, -0.52F,
-            -0.84F, 1.02F,  0.28F
-        );
-
-        box(collector, pose, YELLOW, light,
-             0.84F, 0.91F, -0.52F,
-             0.86F, 1.02F,  0.28F
-        );
-
-        // Door handles
-        box(collector, pose, IRON, light,
-            -0.88F, 1.08F, -0.32F,
-            -0.84F, 1.13F, -0.15F
-        );
-
-        box(collector, pose, IRON, light,
-             0.84F, 1.08F, -0.32F,
-             0.88F, 1.13F, -0.15F
-        );
-
-        // =====================================
-        // REAR EQUIPMENT BED
-        // =====================================
-
-        box(collector, pose, DARK, light,
-            -0.83F, 0.78F, -1.66F,
-             0.83F, 1.04F, -0.78F
-        );
-
-        // Rear bed walls
+        // Roof armor rails - open center for driver
         box(collector, pose, BLACK, light,
-            -0.85F, 1.02F, -1.66F,
-            -0.73F, 1.30F, -0.78F
+            -0.90F, 1.77F, -0.78F,
+            -0.76F, 1.93F,  0.49F
         );
 
         box(collector, pose, BLACK, light,
-             0.73F, 1.02F, -1.66F,
-             0.85F, 1.30F, -0.78F
+             0.76F, 1.77F, -0.78F,
+             0.90F, 1.93F,  0.49F
         );
 
         box(collector, pose, BLACK, light,
-            -0.85F, 1.02F, -1.66F,
-             0.85F, 1.30F, -1.53F
+            -0.82F, 1.77F, 0.37F,
+             0.82F, 1.93F, 0.49F
         );
 
-        // Yellow rear bed stripe
+        box(collector, pose, BLACK, light,
+            -0.82F, 1.77F, -0.78F,
+             0.82F, 1.93F, -0.66F
+        );
+
+        // Rear equipment bed
+        box(collector, pose, DARK, light,
+            -0.82F, 0.73F, -1.56F,
+             0.82F, 1.02F, -0.78F
+        );
+
+        box(collector, pose, BLACK, light,
+            -0.88F, 0.98F, -1.53F,
+            -0.72F, 1.22F, -0.78F
+        );
+
+        box(collector, pose, BLACK, light,
+             0.72F, 0.98F, -1.53F,
+             0.88F, 1.22F, -0.78F
+        );
+
+        // Yellow side warning stripes
         box(collector, pose, YELLOW, light,
-            -0.72F, 1.05F, -1.50F,
-             0.72F, 1.09F, -1.46F
+            -0.96F, 0.80F, -0.65F,
+            -0.91F, 0.94F,  1.42F
         );
 
-        // Equipment boxes
+        box(collector, pose, YELLOW, light,
+             0.91F, 0.80F, -0.65F,
+             0.96F, 0.94F,  1.42F
+        );
+
+        // Doors and handles
         box(collector, pose, GRAY, light,
-            -0.55F, 1.05F, -1.39F,
-            -0.12F, 1.38F, -0.94F
+            -0.88F, 1.00F, -0.48F,
+            -0.86F, 1.08F, -0.25F
         );
 
-        box(collector, pose, IRON, light,
-             0.12F, 1.05F, -1.39F,
-             0.55F, 1.38F, -0.94F
-        );
-
-        // Equipment warning stripe
-        box(collector, pose, YELLOW, light,
-            -0.55F, 1.38F, -1.38F,
-             0.55F, 1.42F, -1.33F
-        );
-
-        // =====================================
-        // SIDE BODY DETAILS
-        // =====================================
-
-        // Side armor stripes
-        box(collector, pose, YELLOW, light,
-            -0.91F, 0.75F, -0.65F,
-            -0.87F, 0.88F,  1.35F
-        );
-
-        box(collector, pose, YELLOW, light,
-             0.87F, 0.75F, -0.65F,
-             0.91F, 0.88F,  1.35F
+        box(collector, pose, GRAY, light,
+             0.86F, 1.00F, -0.48F,
+             0.88F, 1.08F, -0.25F
         );
 
         // Side steps
         box(collector, pose, IRON, light,
-            -1.02F, 0.40F, -0.55F,
-            -0.87F, 0.53F,  0.48F
+            -1.02F, 0.40F, -0.68F,
+            -0.88F, 0.54F,  0.55F
         );
 
         box(collector, pose, IRON, light,
-             0.87F, 0.40F, -0.55F,
-             1.02F, 0.53F,  0.48F
+             0.88F, 0.40F, -0.68F,
+             1.02F, 0.54F,  0.55F
         );
 
-        // =====================================
-        // FRONT GRILLE AND LIGHTS
-        // =====================================
-
-        box(collector, pose, DARK, light,
-            -0.54F, 0.79F, 1.58F,
-             0.54F, 1.09F, 1.64F
+        // Front grille
+        box(collector, pose, BLACK, light,
+            -0.55F, 0.79F, 1.59F,
+             0.55F, 1.08F, 1.65F
         );
 
-        // Grille bars
-        for (int i = 0; i < 7; i++) {
-            float x = -0.40F + i * 0.133F;
+        for (int i = 0; i < 5; i++) {
+            float x = -0.38F + i * 0.19F;
 
             box(collector, pose, IRON, light,
-                x, 0.82F, 1.65F,
+                x, 0.81F, 1.66F,
                 x + 0.035F, 1.05F, 1.68F
             );
         }
 
+        // Front bumper
+        box(collector, pose, IRON, light,
+            -1.02F, 0.36F, 1.66F,
+             1.02F, 0.61F, 1.84F
+        );
+
+        // Winch
+        box(collector, pose, DARK, light,
+            -0.20F, 0.43F, 1.84F,
+             0.20F, 0.58F, 1.94F
+        );
+
         // Headlights
         box(collector, pose, LIGHT, light,
-            -0.81F, 0.84F, 1.61F,
-            -0.57F, 1.06F, 1.69F
+            -0.80F, 0.85F, 1.66F,
+            -0.56F, 1.04F, 1.70F
         );
 
         box(collector, pose, LIGHT, light,
-             0.57F, 0.84F, 1.61F,
-             0.81F, 1.06F, 1.69F
+             0.56F, 0.85F, 1.66F,
+             0.80F, 1.04F, 1.70F
         );
 
         // Orange indicators
         box(collector, pose, ORANGE, light,
-            -0.94F, 0.84F, 1.58F,
-            -0.82F, 1.04F, 1.68F
+            -0.94F, 0.85F, 1.64F,
+            -0.82F, 1.03F, 1.69F
         );
 
         box(collector, pose, ORANGE, light,
-             0.82F, 0.84F, 1.58F,
-             0.94F, 1.04F, 1.68F
+             0.82F, 0.85F, 1.64F,
+             0.94F, 1.03F, 1.69F
         );
 
-        // Heavy front bumper
+        // Mirrors
         box(collector, pose, IRON, light,
-            -1.02F, 0.34F, 1.68F,
-             1.02F, 0.59F, 1.88F
-        );
-
-        // Front winch
-        box(collector, pose, DARK, light,
-            -0.20F, 0.42F, 1.88F,
-             0.20F, 0.57F, 1.97F
-        );
-
-        // =====================================
-        // MIRRORS
-        // =====================================
-
-        box(collector, pose, IRON, light,
-            -1.02F, 1.34F, 0.18F,
-            -0.85F, 1.51F, 0.36F
+            -1.05F, 1.33F, 0.15F,
+            -0.86F, 1.52F, 0.38F
         );
 
         box(collector, pose, IRON, light,
-             0.85F, 1.34F, 0.18F,
-             1.02F, 1.51F, 0.36F
+             0.86F, 1.33F, 0.15F,
+             1.05F, 1.52F, 0.38F
         );
-
-        // =====================================
-        // ROOF EQUIPMENT
-        // =====================================
 
         // Roof light bar
         box(collector, pose, BLACK, light,
-            -0.69F, 1.91F, -0.08F,
-             0.69F, 2.04F,  0.19F
+            -0.67F, 1.94F, -0.15F,
+             0.67F, 2.06F,  0.12F
         );
 
-        // Left emergency light
         box(collector, pose, LIGHT, light,
-            -0.59F, 2.04F, -0.05F,
-            -0.34F, 2.13F, 0.15F
+            -0.58F, 2.06F, -0.12F,
+            -0.34F, 2.13F, 0.08F
         );
 
-        // Right emergency light
-        box(collector, pose, ORANGE, light,
-             0.34F, 2.04F, -0.05F,
-             0.59F, 2.13F, 0.15F
+        box(collector, pose, LIGHT, light,
+             0.34F, 2.06F, -0.12F,
+             0.58F, 2.13F, 0.08F
         );
 
         // Radar mast
         box(collector, pose, IRON, light,
-            -0.055F, 1.92F, -0.40F,
-             0.055F, 2.35F, -0.29F
+            -0.045F, 1.92F, -0.28F,
+             0.045F, 2.33F, -0.19F
         );
 
-        // Radar rotating assembly
+        // Rotating radar dish
         pose.pushPose();
-
-        pose.translate(0.0F, 2.35F, -0.34F);
+        pose.translate(0.0F, 2.33F, -0.23F);
         pose.rotateDegrees(Axis.YP, radarSpin);
-        pose.translate(0.0F, -2.35F, 0.34F);
+        pose.translate(0.0F, -2.33F, 0.23F);
 
-        // Radar dish
         box(collector, pose, YELLOW, light,
-            -0.52F, 2.32F, -0.42F,
-             0.52F, 2.40F, -0.26F
+            -0.48F, 2.31F, -0.28F,
+             0.48F, 2.39F, -0.18F
         );
 
         box(collector, pose, BLACK, light,
-            -0.13F, 2.40F, -0.45F,
-             0.13F, 2.46F, -0.23F
+            -0.12F, 2.40F, -0.31F,
+             0.12F, 2.44F, -0.15F
         );
 
         pose.popPose();
 
         // Antennas
         box(collector, pose, BLACK, light,
-            -0.69F, 1.91F, -0.58F,
-            -0.65F, 2.43F, -0.54F
+            -0.70F, 1.92F, -0.52F,
+            -0.67F, 2.48F, -0.49F
         );
 
         box(collector, pose, BLACK, light,
-             0.65F, 1.91F, -0.58F,
-             0.69F, 2.29F, -0.54F
+             0.68F, 1.92F, -0.52F,
+             0.71F, 2.30F, -0.49F
         );
 
-        // =====================================
-        // REAR BUMPER AND LIGHTS
-        // =====================================
-
+        // Rear bumper
         box(collector, pose, IRON, light,
-            -0.98F, 0.36F, -1.84F,
-             0.98F, 0.59F, -1.65F
+            -0.98F, 0.38F, -1.78F,
+             0.98F, 0.60F, -1.60F
+        );
+
+        // Rear lights
+        box(collector, pose, ORANGE, light,
+            -0.83F, 0.82F, -1.62F,
+            -0.63F, 1.00F, -1.58F
         );
 
         box(collector, pose, ORANGE, light,
-            -0.83F, 0.82F, -1.70F,
-            -0.63F, 1.01F, -1.65F
+             0.63F, 0.82F, -1.62F,
+             0.83F, 1.00F, -1.58F
         );
 
-        box(collector, pose, ORANGE, light,
-             0.63F, 0.82F, -1.70F,
-             0.83F, 1.01F, -1.65F
-        );
-
-        // =====================================
-        // OFF-ROAD WHEELS
-        // =====================================
-
-        wheel(collector, pose, light, -1, 1, wheelSpin);
-        wheel(collector, pose, light,  1, 1, wheelSpin);
+        // Four rotating off-road wheels
         wheel(collector, pose, light, -1, -1, wheelSpin);
         wheel(collector, pose, light,  1, -1, wheelSpin);
+        wheel(collector, pose, light, -1,  1, wheelSpin);
+        wheel(collector, pose, light,  1,  1, wheelSpin);
     }
 
     private static void wheel(
@@ -413,47 +330,45 @@ public final class ChaserTruckModel {
         int front,
         float spin
     ) {
-        float cx = side * 0.94F;
-        float cy = 0.48F;
-        float cz = front * 1.08F;
+        float cx = side * 0.98F;
+        float cy = 0.45F;
+        float cz = front * 1.05F;
 
         pose.pushPose();
 
-        // Rotate wheel tread around axle
         pose.translate(cx, cy, cz);
         pose.rotateDegrees(Axis.XP, spin);
         pose.translate(-cx, -cy, -cz);
 
-        // Large rubber tire
+        // Wide black off-road tire
         cylinderX(
             collector, pose, BLACK, light,
-            cx, cy, cz, 0.42F, 0.43F
+            cx, cy, cz, 0.46F, 0.43F
         );
 
-        // Wheel hub
+        // Recessed metal rim
         cylinderX(
             collector, pose, IRON, light,
-            cx, cy, cz, 0.44F, 0.24F
+            cx, cy, cz, 0.48F, 0.235F
         );
 
-        // Yellow hub center
+        // Small yellow center cap on the outer face
         cylinderX(
             collector, pose, YELLOW, light,
-            cx + side * 0.225F, cy, cz, 0.035F, 0.11F
+            cx + side * 0.245F, cy, cz, 0.025F, 0.105F
         );
 
-        // Tire tread blocks
+        // Chunky rubber tread blocks around the tire circumference
         for (int i = 0; i < 12; i++) {
             pose.pushPose();
-
             pose.translate(cx, cy, cz);
             pose.rotateDegrees(Axis.XP, i * 30.0F);
             pose.translate(-cx, -cy, -cz);
 
             box(
                 collector, pose, DARK, light,
-                cx - 0.18F, cy + 0.38F, cz - 0.075F,
-                cx + 0.18F, cy + 0.46F, cz + 0.075F
+                cx - 0.19F, cy + 0.385F, cz - 0.075F,
+                cx + 0.19F, cy + 0.455F, cz + 0.075F
             );
 
             pose.popPose();
@@ -478,20 +393,18 @@ public final class ChaserTruckModel {
             RenderTypes.entitySolid(texture),
             (matrix, buffer) -> {
 
-                int segments = 20;
+                int segments = 12;
 
                 float x0 = cx - width / 2.0F;
                 float x1 = cx + width / 2.0F;
 
                 for (int i = 0; i < segments; i++) {
 
-                    float a0 = (float) (
-                        i * Math.PI * 2.0 / segments
-                    );
+                    float a0 =
+                        (float) (i * Math.PI * 2.0 / segments);
 
-                    float a1 = (float) (
-                        (i + 1) * Math.PI * 2.0 / segments
-                    );
+                    float a1 =
+                        (float) ((i + 1) * Math.PI * 2.0 / segments);
 
                     float mid = (a0 + a1) * 0.5F;
 
@@ -513,6 +426,7 @@ public final class ChaserTruckModel {
                         0, ny, nz
                     );
 
+                    // Left wheel cap
                     triangle(
                         buffer, matrix, light,
                         x0, cy, cz,
@@ -521,6 +435,7 @@ public final class ChaserTruckModel {
                         -1, 0, 0
                     );
 
+                    // Right wheel cap
                     triangle(
                         buffer, matrix, light,
                         x1, cy, cz,
