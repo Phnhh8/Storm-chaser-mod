@@ -6,6 +6,7 @@ import dev.stormchasers.tornado.TornadoRemoteItem;
 import dev.stormchasers.equipment.StormProbeItem;
 import dev.stormchasers.equipment.RadarItem;
 import dev.stormchasers.vehicle.ChaserTruckItem;
+import dev.stormchasers.vehicle.ChaserTruckEntities;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
@@ -24,7 +25,10 @@ public class StormChasers implements ModInitializer {
 
     public static final String MOD_ID = "stormchasers";
 
-    private static Item register(String name, ItemFactory factory) {
+    private static Item register(
+        String name,
+        ItemFactory factory
+    ) {
         ResourceKey<Item> key = ResourceKey.create(
             Registries.ITEM,
             Identifier.fromNamespaceAndPath(MOD_ID, name)
@@ -48,6 +52,8 @@ public class StormChasers implements ModInitializer {
         Item create(Item.Properties properties);
     }
 
+    // ITEMS
+
     public static final Item TORNADO_REMOTE = register(
         "tornado_remote",
         TornadoRemoteItem::new
@@ -68,10 +74,15 @@ public class StormChasers implements ModInitializer {
         ChaserTruckItem::new
     );
 
-    public static final ResourceKey<CreativeModeTab> STORM_CHASERS_TAB_KEY =
-        ResourceKey.create(
+    // CREATIVE TAB
+
+    public static final ResourceKey<CreativeModeTab>
+        STORM_CHASERS_TAB_KEY = ResourceKey.create(
             Registries.CREATIVE_MODE_TAB,
-            Identifier.fromNamespaceAndPath(MOD_ID, "storm_chasers")
+            Identifier.fromNamespaceAndPath(
+                MOD_ID,
+                "storm_chasers"
+            )
         );
 
     public static final CreativeModeTab STORM_CHASERS_TAB =
@@ -86,10 +97,18 @@ public class StormChasers implements ModInitializer {
             })
             .build();
 
+    // INITIALIZATION
+
     @Override
     public void onInitialize() {
+
+        // Register custom vehicle entity
+        ChaserTruckEntities.initialize();
+
+        // Start tornado system
         TornadoManager.initialize();
 
+        // Register creative tab
         Registry.register(
             BuiltInRegistries.CREATIVE_MODE_TAB,
             STORM_CHASERS_TAB_KEY,
