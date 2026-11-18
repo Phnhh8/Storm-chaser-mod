@@ -1,7 +1,8 @@
 
 package dev.stormchasers.equipment;
 
-import net.minecraft.Util;
+import java.util.UUID;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,7 +27,7 @@ public class RadarItem extends Item {
                 Component.literal(
                     "§2STORM RADAR: §fScan completed!"
                 ),
-                Util.NIL_UUID
+                new UUID(0L, 0L)
             );
         }
 
