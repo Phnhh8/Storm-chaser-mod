@@ -1,7 +1,6 @@
 
 package dev.stormchasers.equipment;
 
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 import net.minecraft.network.chat.Component;
