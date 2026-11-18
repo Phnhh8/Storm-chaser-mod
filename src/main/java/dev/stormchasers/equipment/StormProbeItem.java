@@ -1,9 +1,9 @@
 
 package dev.stormchasers.equipment;
 
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -38,7 +38,7 @@ public class StormProbeItem extends Item {
                     "§bSTORM PROBE | Wind: " +
                     wind + " km/h | Risk: " + risk
                 ),
-                Util.NIL_UUID
+                new UUID(0L, 0L)
             );
         }
 
