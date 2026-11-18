@@ -2,6 +2,7 @@
 package dev.stormchasers.tornado;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.Util;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -22,20 +23,15 @@ public class TornadoRemoteItem extends Item {
         InteractionHand hand
     ) {
         if (!level.isClientSide()) {
-            Vec3 pos = player.position().add(
+            Vec3 position = player.position().add(
                 player.getLookAngle().scale(24)
             );
 
-            TornadoManager.create(
-                level,
-                pos,
-                900,
-                8.5
-            );
+            TornadoManager.create(level, position, 900, 8.5);
 
-            player.displayClientMessage(
-                Component.literal("§cTORNADO WARNING!"),
-                true
+            player.sendSystemMessage(
+                Component.literal("§cTORNADO WARNING! Tornado spawned!"),
+                Util.NIL_UUID
             );
         }
 
