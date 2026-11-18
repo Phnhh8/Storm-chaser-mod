@@ -11,6 +11,9 @@
   "entrypoints": {
     "main": [
       "dev.stormchasers.StormChasers"
+    ],
+    "client": [
+      "dev.stormchasers.client.StormChasersClient"
     ]
   },
   "depends": {
