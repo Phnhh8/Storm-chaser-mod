@@ -8,15 +8,17 @@ import dev.stormchasers.equipment.RadarItem;
 import dev.stormchasers.vehicle.ChaserTruckItem;
 
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
+import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTab;
 
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 public class StormChasers implements ModInitializer {
 
@@ -66,17 +68,32 @@ public class StormChasers implements ModInitializer {
         ChaserTruckItem::new
     );
 
+    public static final ResourceKey<CreativeModeTab> STORM_CHASERS_TAB_KEY =
+        ResourceKey.create(
+            Registries.CREATIVE_MODE_TAB,
+            Identifier.fromNamespaceAndPath(MOD_ID, "storm_chasers")
+        );
+
+    public static final CreativeModeTab STORM_CHASERS_TAB =
+        FabricCreativeModeTab.builder()
+            .title(Component.literal("Storm Chasers"))
+            .icon(() -> new ItemStack(TORNADO_REMOTE))
+            .displayItems((parameters, output) -> {
+                output.accept(TORNADO_REMOTE);
+                output.accept(STORM_PROBE);
+                output.accept(STORM_RADAR);
+                output.accept(CHASER_TRUCK);
+            })
+            .build();
+
     @Override
     public void onInitialize() {
         TornadoManager.initialize();
 
-        CreativeModeTabEvents.modifyOutputEvent(
-            CreativeModeTabs.TOOLS_AND_UTILITIES
-        ).register(output -> {
-            output.accept(TORNADO_REMOTE);
-            output.accept(STORM_PROBE);
-            output.accept(STORM_RADAR);
-            output.accept(CHASER_TRUCK);
-        });
+        Registry.register(
+            BuiltInRegistries.CREATIVE_MODE_TAB,
+            STORM_CHASERS_TAB_KEY,
+            STORM_CHASERS_TAB
+        );
     }
 }
