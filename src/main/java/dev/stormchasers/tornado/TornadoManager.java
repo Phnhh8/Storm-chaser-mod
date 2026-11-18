@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
@@ -27,6 +28,18 @@ public final class TornadoManager {
 
         ServerTickEvents.END_SERVER_TICK.register(server ->
             tick(server.getAllLevels())
+        );
+    }
+
+    // Hàm tạo lốc dành cho TornadoRemoteItem
+    public static void spawnTornado(Level level, BlockPos position) {
+        if (level.isClientSide()) return;
+
+        create(
+            level,
+            Vec3.atBottomCenterOf(position),
+            20 * 120,
+            180.0
         );
     }
 
@@ -89,9 +102,7 @@ public final class TornadoManager {
                 (Entity) null, area, e -> e.isAlive()
             )) {
                 Vec3 delta = v.center.subtract(entity.position());
-                double distance = Math.max(
-                    1.0, delta.horizontalDistance()
-                );
+                double distance = Math.max(1.0, delta.horizontalDistance());
 
                 Vec3 force = new Vec3(
                     delta.x / distance * v.strength / 100,
@@ -102,6 +113,7 @@ public final class TornadoManager {
                 entity.setDeltaMovement(
                     entity.getDeltaMovement().add(force)
                 );
+                entity.hurtMarked = true;
             }
         }
     }
