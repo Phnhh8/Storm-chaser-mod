@@ -1,14 +1,11 @@
 
 package dev.stormchasers.tornado;
 
-
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.entity.player.Player;
 
 public class TornadoRemoteItem extends Item {
 
@@ -17,21 +14,17 @@ public class TornadoRemoteItem extends Item {
     }
 
     @Override
-    public InteractionResult use(
-        Level level,
-        Player player,
-        InteractionHand hand
-    ) {
-        if (!level.isClientSide()) {
-            Vec3 position = player.position().add(
-                player.getLookAngle().scale(24)
+    public InteractionResult useOn(UseOnContext context) {
+        Player player = context.getPlayer();
+
+        if (player != null && !context.getLevel().isClientSide()) {
+            TornadoManager.spawnTornado(
+                context.getLevel(),
+                context.getClickedPos().above()
             );
 
-            TornadoManager.create(level, position, 900, 8.5);
-
-player.sendSystemMessage(
-    Component.literal("§cTORNADO WARNING! Tornado spawned!")
-);
+            player.sendSystemMessage(
+                Component.literal("§cTORNADO WARNING! Tornado spawned!")
             );
         }
 
