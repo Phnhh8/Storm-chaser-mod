@@ -30,9 +30,9 @@ public class TornadoRemoteItem extends Item {
 
             TornadoManager.create(level, position, 900, 8.5);
 
-            player.sendSystemMessage(
-                Component.literal("§cTORNADO WARNING! Tornado spawned!"),
-                new UUID(0L, 0L)
+player.sendSystemMessage(
+    Component.literal("§cTORNADO WARNING! Tornado spawned!")
+);
             );
         }
 
