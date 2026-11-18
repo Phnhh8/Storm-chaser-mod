@@ -1,6 +1,9 @@
 
 package dev.stormchasers.equipment;
 
+import java.util.concurrent.ThreadLocalRandom;
+
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -15,24 +18,27 @@ public class StormProbeItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
-
+    public InteractionResult use(
+        Level level,
+        Player player,
+        InteractionHand hand
+    ) {
         if (!level.isClientSide()) {
-            int wind = 30 + level.random.nextInt(171);
+            int wind = ThreadLocalRandom.current().nextInt(30, 201);
 
-            String risk = wind >= 160 ? "EF5 DANGER"
-                : wind >= 130 ? "EF4 DANGER"
-                : wind >= 100 ? "EF3 WARNING"
-                : wind >= 70 ? "EF2 WARNING"
-                : wind >= 45 ? "EF1 WATCH"
-                : "LOW RISK";
+            String risk =
+                wind >= 180 ? "EF5 EXTREME" :
+                wind >= 150 ? "EF4 SEVERE" :
+                wind >= 120 ? "EF3 HIGH" :
+                wind >= 90 ? "EF2 MODERATE" :
+                wind >= 60 ? "EF1 LOW" : "NORMAL";
 
-            player.displayClientMessage(
+            player.sendSystemMessage(
                 Component.literal(
-                    "§bSTORM PROBE\n§fWind: §e" + wind +
-                    " km/h §f| Risk: §c" + risk
+                    "§bSTORM PROBE | Wind: " +
+                    wind + " km/h | Risk: " + risk
                 ),
-                true
+                Util.NIL_UUID
             );
         }
 
