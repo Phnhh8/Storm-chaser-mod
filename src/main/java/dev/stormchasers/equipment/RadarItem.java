@@ -23,9 +23,11 @@ public class RadarItem extends Item {
         InteractionHand hand
     ) {
         if (!level.isClientSide()) {
-            player.sendSystemMessage(
-                Component.literal(
-                    "§2STORM RADAR: §fScan completed!"
+player.sendSystemMessage(
+    Component.literal(
+        "§2STORM RADAR: §fScan completed!"
+    )
+);
                 ),
                 new UUID(0L, 0L)
             );
